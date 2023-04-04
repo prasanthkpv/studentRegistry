@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-ui
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: studentregister.azurecr.io/frontend-prasanth:1.0
+          env:
+            - name: PORT
+              value: '8000'
+            - name: API-URL
+              value: 'http://localhost:5000'
+          ports:
+            - containerPort: 8000
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-ui
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
